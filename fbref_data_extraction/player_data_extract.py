@@ -5,8 +5,15 @@ import time
 
 
 class PlayerDataExtract:
+    """
+    Class to extract the raw data from the FBREF website at the individual season level using CSS selectors from the HTML response.
+
+    Attributes:
+        data_extract_css_components_dict (dict): CSS selectors to extract the individual player statistics
+    """
+
     def __init__(self):
-        self.data_extrac_css_components_dict = {
+        self.data_extract_css_components_dict = {
             "date": "th>a[href*= '/en/matches/']",
             "day_of_the_week": "td[data-stat='dayofweek'][class='left']",
             "competition": "td[data-stat='comp']>a",
@@ -47,6 +54,17 @@ class PlayerDataExtract:
     def search_player_season_data(
         self, link_list: list, player_name_dict: dict
     ) -> pd.DataFrame:
+        """
+        Searches the player's individual season link for the CSS selectors defined in the __init__ method and saves the values in
+        a dataframe.
+
+        Args:
+            link_list (list): List of a link that represetnts the players main homepage that will be parsed for their season level links
+            player_name_dict (dict): Dictionary with the stored formatted names
+
+        Returns:
+            store_data (pd.DataFrame): Dataframe with the stored fields and values extracted from the player's individual season
+        """
         store_data = pd.DataFrame()
 
         for link in link_list:
@@ -70,7 +88,7 @@ class PlayerDataExtract:
                 row_text = BeautifulSoup(str(data_value), features="html.parser")
                 store_data_dic = {}
 
-                for key, value in self.data_extrac_css_components_dict.items():
+                for key, value in self.data_extract_css_components_dict.items():
                     rows = row_text.select(value)
                     clean_data_list_1 = [
                         single_value.text.strip() for single_value in rows
@@ -94,6 +112,16 @@ class PlayerDataExtract:
     def execute_individual_player_data_extract(
         self, link_list: list, player_name_dict: dict
     ) -> pd.DataFrame:
+        """
+        Executes the process to extract the individual player's data from their specified season links.
+
+        Args:
+            link_list (list): List of a link that represetnts the players main homepage that will be parsed for their season level links
+            player_name_dict (dict): Dictionary with the stored formatted names
+
+        Returns:
+            player_data_df (pd.DataFrame): Dataframe with the stored fields and values extracted from the player's individual season
+        """
         player_data_df = self.search_player_season_data(
             link_list=link_list, player_name_dict=player_name_dict
         )

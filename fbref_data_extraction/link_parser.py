@@ -4,7 +4,24 @@ import re
 
 
 class FBREFLinkParser:
+    """
+    Class to parse through the specified links links and extract the information that is needed through regular
+    expressions and CSS selectors.
+    """
+
     def search_for_player_id(self, link_list: list, player_name_dict: dict) -> dict:
+        """
+        Parses through the request at the player level with the first two letters of their last names and extracts the
+        the players unique ID using a CSS selector based on the player's name as a match.
+
+        Args:
+            link_list (list): List of a link that will be parsed that only includes the player's first two letters of their last name
+            player_name_dict (dict): Dictionary with the stored formatted names
+
+        Returns:
+            player_unique_identifier_dictionary (dict): Dictionary with the player's unique FBREF ID and the player's full name with the
+            added delimiter
+        """
         search_player_for_id_link = link_list[0]
 
         response = requests.get(search_player_for_id_link)
@@ -30,6 +47,18 @@ class FBREFLinkParser:
     def search_for_player_game_data_links(
         self, link_list: list, player_name_dict: dict
     ) -> dict:
+        """
+        Parses through and stores the player's links for their match logs at the individual level for their statistics
+        at the season level.
+
+        Args:
+            link_list (list): List of a link that represetnts the players main homepage that will be parsed for their season level links
+            player_name_dict (dict): Dictionary with the stored formatted names
+
+        Returns:
+            player_seasons_dict (dict): Dictionary with a list that has been filtered including player links for their individual
+            seasons that will be parsed later.
+        """
         search_for_years_competition = link_list[0]
         player_name = player_name_dict["full_name_with_delimiter"]
 
@@ -79,6 +108,18 @@ class FBREFLinkParser:
     def execute_fbref_link_parser(
         self, link_search_type: str, link_list: list, player_name_dict: dict
     ) -> dict:
+        """
+        Executes the ability to parse through links and search for the relevant links related to the player's unique FBREF ID and
+        individual season links.
+
+        Args:
+            link_search_type (str): Specifies the link creation action based on the order of whtere the process is executing
+            link_list (list): List of links to parse through and request the page information for
+            player_name_dict (dict): Dictionary with the player's unique FBREF ID and the player's full name with the added delimiter
+
+        Returns:
+            search_response (dict): Dictionary with a list of links that have been extracted
+        """
         if link_search_type == "player_id_search_by_last_name":
             search_response = self.search_for_player_id(
                 link_list=link_list, player_name_dict=player_name_dict
