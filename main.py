@@ -1,3 +1,6 @@
-from player_search import FBREFPlayerSearch
+from fbref_data_extraction.player_search import FBREFPlayerSearch
 
-FBREFPlayerSearch().execute_player_search_by_last_name(raw_player_name="Lionel Messi")
+# Extracts the data from FBREF
+player_search_raw_df = FBREFPlayerSearch().execute_fbref_search_player_stats(
+    raw_player_name="Lionel Messi"
+)
